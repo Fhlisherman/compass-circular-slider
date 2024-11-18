@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import CompassSlider from "./compassSlider";
-import { Input } from "@mui/material";
 import CompassElevationSlider from "./compasselevationSlider";
 const App: React.FC = () => {
   const [angle, setAngle] = useState(0);
@@ -16,7 +15,7 @@ const App: React.FC = () => {
         setAngle={(value: number) => setAngle(value)}
       />
       <CompassElevationSlider radius={40} elevation={elevation} changeElevation={(value: number) => setElevation(value)} />
-      <Input
+      <input
         type="number"
         value={angle}
         onChange={(e) => {

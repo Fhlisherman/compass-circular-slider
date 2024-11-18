@@ -31,7 +31,10 @@ const CompassElevationSlider: React.FC<Props> = ({
       const atan = Math.atan2(dy, dx);
       let visualDeg = (-atan * (180 / Math.PI) + 360) % 360;
       if (visualDeg > 180) visualDeg -= 360;
-      visualDeg = Math.min(Math.max(Math.ceil(visualDeg), visualMin), visualMax);
+      visualDeg = Math.min(
+        Math.max(Math.ceil(visualDeg), visualMin),
+        visualMax
+      );
 
       const constrainedElevation = Math.floor(visualDeg / 2);
       changeElevation(constrainedElevation);
@@ -167,7 +170,7 @@ const CompassElevationSlider: React.FC<Props> = ({
           {/* Arrow pointing based on elevation value */}
           <g
             style={{
-              transform: `rotate(${-(elevation * 2 + 270)}deg)`, 
+              transform: `rotate(${-(elevation * 2 + 270)}deg)`,
               transformOrigin: `${radius}px ${radius}px`,
             }}
           >
