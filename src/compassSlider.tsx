@@ -59,11 +59,6 @@ const CompassSlider = ({
 
   const svgSize = radius * 2;
   const arrowLength = radius * 0.7;
-
-  
-
-
-
   const arcRadius = radius - 4;
   const outsideRangeSlice1 = describeSlice(0, min, arcRadius, radius);
   const outsideRangeSlice2 = describeSlice(max, 359.9999999999, arcRadius, radius);
