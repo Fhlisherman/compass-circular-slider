@@ -14,10 +14,8 @@ const App: React.FC = () => {
         min={20}
         max={200}
         setAngle={(value: number) => setAngle(value)}
-        elevation={elevation}
-        changeElevation={(value: number) => setElevation(value)}
       />
-      {/* <CompassElevationSlider radius={60} elevation={elevation} changeElevation={(value: number) => setElevation(value)}/> */}
+      <CompassElevationSlider radius={40} elevation={elevation} changeElevation={(value: number) => setElevation(value)} />
       <Input
         type="number"
         value={angle}

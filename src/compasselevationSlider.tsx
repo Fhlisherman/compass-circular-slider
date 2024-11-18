@@ -1,4 +1,3 @@
-import { Box } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 
 type Props = {
@@ -12,53 +11,55 @@ const CompassElevationSlider: React.FC<Props> = ({
   changeElevation,
   radius,
 }) => {
-  const min = -15;
-  const max = 15;
   const visualMin = -30;
   const visualMax = 30;
-
-  useEffect(() => {
-    changeElevation(Math.max(Math.min(elevation, max), min));
-  }, []);
 
   const circleRef = useRef<HTMLDivElement | null>(null);
   const [isDragging, setIsDragging] = useState(false);
 
-  const handleMouseDown = () => {
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!isDragging || !circleRef.current) return;
+
+      const elP = circleRef.current.getBoundingClientRect();
+      const centerX = elP.left + elP.width / 2;
+      const centerY = elP.top + elP.height / 2;
+
+      const dx = e.clientX - centerX;
+      const dy = e.clientY - centerY;
+
+      const atan = Math.atan2(dy, dx);
+      let visualDeg = (-atan * (180 / Math.PI) + 360) % 360;
+      if (visualDeg > 180) visualDeg -= 360;
+      visualDeg = Math.min(Math.max(Math.ceil(visualDeg), visualMin), visualMax);
+
+      const constrainedElevation = Math.floor(visualDeg / 2);
+      changeElevation(constrainedElevation);
+    };
+
+    const handleMouseUp = () => {
+      setIsDragging(false);
+    };
+
+    if (isDragging) {
+      document.addEventListener("mousemove", handleMouseMove);
+      document.addEventListener("mouseup", handleMouseUp);
+    }
+
+    return () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, [isDragging, visualMin, visualMax, changeElevation]);
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    e.stopPropagation();
     setIsDragging(true);
-  };
-
-  const handleMouseUp = () => {
-    setIsDragging(false);
-  };
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDragging || !circleRef.current) return;
-
-    const elP = circleRef.current.getBoundingClientRect();
-
-    // Center coordinates of the element
-    const centerX = elP.left + elP.width / 2;
-    const centerY = elP.top + elP.height / 2;
-
-    // Mouse position relative to the center of the circle
-    const dx = e.clientX - centerX;
-    const dy = e.clientY - centerY;
-
-    // Calculate the angle, making counterclockwise increase and clockwise decrease
-    const atan = Math.atan2(dy, dx);
-    let visualDeg = ((-atan * (180 / Math.PI)) + 360) % 360; // Invert angle to match desired direction
-    if (visualDeg > 180) visualDeg -= 360;
-    visualDeg = Math.min(Math.max(Math.ceil(visualDeg), visualMin), visualMax);
-
-    const constrainedElevation = Math.floor(visualDeg / 2); // Map to stored range
-    changeElevation(constrainedElevation);
   };
 
   const svgSize = radius * 2;
   const arrowLength = radius * 0.7;
 
-  // Function to describe an arc path within the -30 to 30 visual range
   const describeSlice = (
     startAngle: number,
     endAngle: number,
@@ -69,14 +70,13 @@ const CompassElevationSlider: React.FC<Props> = ({
     const largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1";
 
     return [
-      `M ${radius},${radius}`, // Move to the center
-      `L ${start.x},${start.y}`, // Line to start of arc
-      `A ${arcRadius},${arcRadius} 0 ${largeArcFlag} 0 ${end.x},${end.y}`, // Draw arc
-      "Z", // Close path back to the center
+      `M ${radius},${radius}`,
+      `L ${start.x},${start.y}`,
+      `A ${arcRadius},${arcRadius} 0 ${largeArcFlag} 0 ${end.x},${end.y}`,
+      "Z",
     ].join(" ");
   };
 
-  // Convert polar coordinates to Cartesian for SVG arc calculation
   const polarToCartesian = (
     centerX: number,
     centerY: number,
@@ -91,37 +91,35 @@ const CompassElevationSlider: React.FC<Props> = ({
   };
 
   const arcRadius = radius - 4;
-  const outsideRangeSlice1 = describeSlice(visualMin, min * 2, arcRadius);
-  const outsideRangeSlice2 = describeSlice(max * 2, visualMax, arcRadius);
+
+  // Highlight Arc (30 degrees range from -15 to +15)
+  const highlightArc = describeSlice(58, 122, arcRadius);
 
   return (
-    <Box
-      sx={{
+    <div
+      style={{
         position: "relative",
-        width: svgSize + 40,
-        height: svgSize + 40,
+        width: `${svgSize + 40}px`,
+        height: `${svgSize + 40}px`,
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        padding: 2,
-        borderRadius: 2,
+        borderRadius: "8px",
       }}
     >
-      <Box
+      <div
         ref={circleRef}
-        sx={{
+        style={{
           position: "relative",
-          width: svgSize,
-          height: svgSize,
-          cursor: "pointer",
+          width: `${svgSize}px`,
+          height: `${svgSize}px`,
+          cursor: isDragging ? "grabbing" : "grab",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
         }}
-        onMouseUp={handleMouseUp}
         onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
       >
         <svg
           width={svgSize}
@@ -138,11 +136,15 @@ const CompassElevationSlider: React.FC<Props> = ({
             fill="none"
           />
 
-          {/* Red Slices Outside Range */}
-          <path d={outsideRangeSlice1} fill="red" opacity="0.3" />
-          <path d={outsideRangeSlice2} fill="red" opacity="0.3" />
+          <path
+            d={highlightArc}
+            fill="white"
+            stroke="black"
+            opacity={0.8}
+            strokeWidth="1"
+          />
 
-          {/* Ticks for every 10 degrees in visual range, centered around 0 */}
+          {/* Degree Ticks */}
           {[...Array(7)].map((_, i) => {
             const angleForLines = ((i - 3) * 10 * Math.PI) / 180; // Adjust for center at 0
             const x1 = radius + Math.cos(angleForLines) * (radius - 10);
@@ -165,22 +167,26 @@ const CompassElevationSlider: React.FC<Props> = ({
           {/* Arrow pointing based on elevation value */}
           <g
             style={{
-              transform: `rotate(${-(elevation * 2 + 270)}deg)`, // Reverse rotation direction for positive up
+              transform: `rotate(${-(elevation * 2 + 270)}deg)`, 
               transformOrigin: `${radius}px ${radius}px`,
             }}
           >
             <polygon
-              points={`${radius},${radius - arrowLength} ${radius - 5},${radius} ${radius + 5},${radius}`}
+              points={`${radius},${radius - arrowLength} ${
+                radius - 5
+              },${radius} ${radius + 5},${radius}`}
               fill="red"
             />
             <polygon
-              points={`${radius},${radius + arrowLength - 20} ${radius - 5},${radius} ${radius + 5},${radius}`}
+              points={`${radius},${radius + arrowLength - 20} ${
+                radius - 5
+              },${radius} ${radius + 5},${radius}`}
               fill="blue"
             />
           </g>
         </svg>
-      </Box>
-    </Box>
+      </div>
+    </div>
   );
 };
 

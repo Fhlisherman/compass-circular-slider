@@ -1,14 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Box, Typography } from "@mui/material";
-import CompassElevationSlider from "./compasselevationSlider";
-type props = {
+
+type Props = {
   radius: number;
   angle: number;
   setAngle: (value: number) => void;
   min: number;
   max: number;
-  elevation: number
-  changeElevation: (value: number) => void;
 };
 
 const CompassSlider = ({
@@ -16,62 +13,65 @@ const CompassSlider = ({
   angle,
   setAngle,
   min = 0,
-  max = 359,
-  elevation,
-  changeElevation
-}: props) => {
+  max = 359.999,
+}: Props) => {
   useEffect(() => {
     setAngle(Math.max(angle, min));
-  }, []);
+  }, [angle, min, setAngle]);
+
   const circleRef = useRef<HTMLDivElement | null>(null);
   const [isDragging, setIsDragging] = useState(false);
 
-  const handleMouseDown = () => {
-    setIsDragging(true);
-  };
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!isDragging || !circleRef.current) return;
 
-  const handleMouseUp = () => {
-    setIsDragging(false);
-  };
+      const elP = circleRef.current.getBoundingClientRect();
+      const elPos = { x: elP.left, y: elP.top };
 
-  const handleMouseMove = (e: React.MouseEvent) => {
-    const elP = circleRef.current?.getBoundingClientRect() ?? {
-      top: 0,
-      left: 0,
-    };
-    const elPos = { x: elP.left, y: elP.top };
-
-    if (isDragging) {
       const mPos = { x: e.clientX - elPos.x, y: e.clientY - elPos.y };
       const atan = Math.atan2(mPos.x - radius, mPos.y - radius);
       const deg = -atan / (Math.PI / 180) + 180;
       const constrainedAngle = Math.min(Math.max(Math.ceil(deg), min), max);
       setAngle(constrainedAngle);
+    };
+
+    const handleMouseUp = () => {
+      setIsDragging(false);
+    };
+
+    if (isDragging) {
+      document.addEventListener("mousemove", handleMouseMove);
+      document.addEventListener("mouseup", handleMouseUp);
     }
+
+    return () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, [isDragging, radius, min, max, setAngle]);
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsDragging(true);
   };
 
   const svgSize = radius * 2;
   const arrowLength = radius * 0.7;
 
-  // Function to describe a pizza-slice arc path
-  const describeSlice = (
-    startAngle: number,
-    endAngle: number,
-    arcRadius: number
-  ) => {
+  const describeSlice = (startAngle: number, endAngle: number, arcRadius: number) => {
     const start = polarToCartesian(radius, radius, arcRadius, endAngle);
     const end = polarToCartesian(radius, radius, arcRadius, startAngle);
     const largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1";
 
     return [
-      `M ${radius},${radius}`, // Move to the center
-      `L ${start.x},${start.y}`, // Line to start of arc
-      `A ${arcRadius},${arcRadius} 0 ${largeArcFlag} 0 ${end.x},${end.y}`, // Draw arc
-      "Z", // Close path back to the center
+      `M ${radius},${radius}`,
+      `L ${start.x},${start.y}`,
+      `A ${arcRadius},${arcRadius} 0 ${largeArcFlag} 0 ${end.x},${end.y}`,
+      "Z",
     ].join(" ");
   };
 
-  // Convert polar coordinates to Cartesian for SVG arc calculation
   const polarToCartesian = (
     centerX: number,
     centerY: number,
@@ -87,42 +87,36 @@ const CompassSlider = ({
 
   const arcRadius = radius - 4;
   const outsideRangeSlice1 = describeSlice(0, min, arcRadius);
-  const outsideRangeSlice2 = describeSlice(max, 359.9, arcRadius);
+  const outsideRangeSlice2 = describeSlice(max, 359.9999999999, arcRadius);
 
   return (
-    <Box sx={{position: 'relative'}}>
-      <Box
-        sx={{
+      <div
+        style={{
           position: "relative",
-          width: svgSize + 40,
-          height: svgSize + 40,
+          width: `${svgSize + 70}px`,
+          height: `${svgSize + 70}px`,
+          padding: 0,
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          padding: 2,
-          borderRadius: 2,
-          zIndex: 3,
+          borderRadius: "8px",
         }}
       >
-        <Typography variant="body2" sx={{ position: "absolute", top: 10 }}>
-          N
-        </Typography>
+        <span style={{ position: "absolute", top: "10px", userSelect: "none" }}>N</span>
 
-        <Box
+        <div
           ref={circleRef}
-          sx={{
+          style={{
             position: "relative",
-            width: svgSize,
-            height: svgSize,
-            cursor: "pointer",
+            width: `${svgSize}px`,
+            height: `${svgSize}px`,
+            cursor: isDragging ? "grabbing" : "grab",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
           }}
-          onMouseUp={handleMouseUp}
           onMouseDown={handleMouseDown}
-          onMouseMove={handleMouseMove}
         >
           <svg
             width={svgSize}
@@ -138,11 +132,8 @@ const CompassSlider = ({
               strokeWidth="2"
               fill="none"
             />
-
-            {/* Red Slices Outside Range */}
             <path d={outsideRangeSlice1} fill="red" opacity="0.3" />
             <path d={outsideRangeSlice2} fill="red" opacity="0.3" />
-
             {[...Array(36)].map((_, i) => {
               const angleForLines = (i * 10 * Math.PI) / 180;
               const x1 = radius + Math.cos(angleForLines) * (radius - 10);
@@ -168,35 +159,21 @@ const CompassSlider = ({
               }}
             >
               <polygon
-                points={`${radius},${radius - arrowLength} ${
-                  radius - 5
-                },${radius} ${radius + 5},${radius}`}
+                points={`${radius},${radius - arrowLength} ${radius - 5},${radius} ${radius + 5},${radius}`}
                 fill="red"
               />
               <polygon
-                points={`${radius},${radius + arrowLength - 20} ${
-                  radius - 5
-                },${radius} ${radius + 5},${radius}`}
+                points={`${radius},${radius + arrowLength - 20} ${radius - 5},${radius} ${radius + 5},${radius}`}
                 fill="blue"
               />
             </g>
           </svg>
-        </Box>
+        </div>
 
-        <Typography variant="body2" sx={{ position: "absolute", bottom: 10 }}>
-          S
-        </Typography>
-        <Typography variant="body2" sx={{ position: "absolute", left: 10 }}>
-          W
-        </Typography>
-        <Typography variant="body2" sx={{ position: "absolute", right: 10 }}>
-          E
-        </Typography>
-      </Box>
-      <Box sx={{position: 'absolute', top: 144, left: -15, zIndex: 3}}>
-        <CompassElevationSlider radius={radius/2} elevation={elevation} changeElevation={changeElevation}/>
-      </Box>
-    </Box>
+        <span style={{ position: "absolute", bottom: "10px", userSelect: "none" }}>S</span>
+        <span style={{ position: "absolute", left: "10px", userSelect: "none" }}>W</span>
+        <span style={{ position: "absolute", right: "10px", userSelect: "none" }}>E</span>
+      </div>
   );
 };
 
