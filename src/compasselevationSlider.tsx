@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { describeSlice } from "./utils";
 
 type Props = {
   elevation: number;
@@ -62,41 +63,8 @@ const CompassElevationSlider: React.FC<Props> = ({
 
   const svgSize = radius * 2;
   const arrowLength = radius * 0.7;
-
-  const describeSlice = (
-    startAngle: number,
-    endAngle: number,
-    arcRadius: number
-  ) => {
-    const start = polarToCartesian(radius, radius, arcRadius, endAngle);
-    const end = polarToCartesian(radius, radius, arcRadius, startAngle);
-    const largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1";
-
-    return [
-      `M ${radius},${radius}`,
-      `L ${start.x},${start.y}`,
-      `A ${arcRadius},${arcRadius} 0 ${largeArcFlag} 0 ${end.x},${end.y}`,
-      "Z",
-    ].join(" ");
-  };
-
-  const polarToCartesian = (
-    centerX: number,
-    centerY: number,
-    arcRadius: number,
-    angleInDegrees: number
-  ) => {
-    const angleInRadians = (angleInDegrees - 90) * (Math.PI / 180);
-    return {
-      x: centerX + arcRadius * Math.cos(angleInRadians),
-      y: centerY + arcRadius * Math.sin(angleInRadians),
-    };
-  };
-
   const arcRadius = radius - 4;
-
-  // Highlight Arc (30 degrees range from -15 to +15)
-  const highlightArc = describeSlice(58, 122, arcRadius);
+  const highlightArc = describeSlice(58, 122, arcRadius, radius);
 
   return (
     <div

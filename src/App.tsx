@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import CompassSlider from "./compassSlider";
-import CompassElevationSlider from "./compasselevationSlider";
+import CompassElevationSlider from "./compassElevationSlider";
+
 const App: React.FC = () => {
   const [angle, setAngle] = useState(0);
   const [elevation, setElevation] = useState(0);

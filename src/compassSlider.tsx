@@ -1,11 +1,12 @@
 import React, { useState, useRef, useEffect } from "react";
+import { describeSlice } from "./utils";
 
 type Props = {
   radius: number;
   angle: number;
   setAngle: (value: number) => void;
-  min: number;
-  max: number;
+  min?: number;
+  max?: number;
 };
 
 const CompassSlider = ({
@@ -59,35 +60,13 @@ const CompassSlider = ({
   const svgSize = radius * 2;
   const arrowLength = radius * 0.7;
 
-  const describeSlice = (startAngle: number, endAngle: number, arcRadius: number) => {
-    const start = polarToCartesian(radius, radius, arcRadius, endAngle);
-    const end = polarToCartesian(radius, radius, arcRadius, startAngle);
-    const largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1";
+  
 
-    return [
-      `M ${radius},${radius}`,
-      `L ${start.x},${start.y}`,
-      `A ${arcRadius},${arcRadius} 0 ${largeArcFlag} 0 ${end.x},${end.y}`,
-      "Z",
-    ].join(" ");
-  };
 
-  const polarToCartesian = (
-    centerX: number,
-    centerY: number,
-    arcRadius: number,
-    angleInDegrees: number
-  ) => {
-    const angleInRadians = (angleInDegrees - 90) * (Math.PI / 180);
-    return {
-      x: centerX + arcRadius * Math.cos(angleInRadians),
-      y: centerY + arcRadius * Math.sin(angleInRadians),
-    };
-  };
 
   const arcRadius = radius - 4;
-  const outsideRangeSlice1 = describeSlice(0, min, arcRadius);
-  const outsideRangeSlice2 = describeSlice(max, 359.9999999999, arcRadius);
+  const outsideRangeSlice1 = describeSlice(0, min, arcRadius, radius);
+  const outsideRangeSlice2 = describeSlice(max, 359.9999999999, arcRadius, radius);
 
   return (
       <div
