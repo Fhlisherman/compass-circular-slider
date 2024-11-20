@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { describeSlice } from "./utils";
+import { describeSlice } from "../utils/utils";
 
 type Props = {
   elevation: number;

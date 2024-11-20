@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { describeSlice } from "./utils";
+import { describeSlice } from "../utils/utils";
 
 type Props = {
   radius: number;
