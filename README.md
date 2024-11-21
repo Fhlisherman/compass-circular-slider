@@ -1,5 +1,5 @@
 # compass-circular-slider
-A customizable circular slider component written in TypeScript, designed to look and function like a compass. The component allows users to set an angle with an optional secondary slider for elevation.
+A customizable circular slider component written in TypeScript, designed to look and function like a compass. The component allows users to set an angle and another slider for elevation steepness.
 
 ## Features
 

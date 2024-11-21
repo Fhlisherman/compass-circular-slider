@@ -65,15 +65,14 @@ const CompassSlider: React.FC<Props> = ({
     };
   }, [isDragging, handleMouseMove, handleMouseUp]);
 
-  const svgSize = radius * 2;
-  const arrowLength = radius * 0.7;
-  const outsideRangeSlices = useMemo(() => {
-    const arcRadius = radius - 4;
+  const {svgSize, arrowLength, outsideRangeSlice1, outsideRangeSlice2}= useMemo(() => {
     return {
-      slice1: describeSlice(0, min, arcRadius, radius),
-      slice2: describeSlice(max, 359.9999999999, arcRadius, radius),
-    };
-  }, [radius, min, max]);
+      svgSize:radius * 2,
+      arrowLength:radius * 0.7,
+      outsideRangeSlice1: describeSlice(0, min, radius - 4, radius),
+      outsideRangeSlice2: describeSlice(0, min, radius - 4, radius)
+    }
+  },[radius, min])
 
   return (
     <div
@@ -120,21 +119,21 @@ const CompassSlider: React.FC<Props> = ({
             strokeWidth="2"
             fill="none"
           />
-           <path d={outsideRangeSlices.slice1} fill="red" opacity="0.3" />
-           <path d={outsideRangeSlices.slice2} fill="red" opacity="0.3" />
+           <path d={outsideRangeSlice1} fill="red" opacity="0.3" />
+           <path d={outsideRangeSlice2} fill="red" opacity="0.3" />
           {[...Array(36)].map((_, index) => {
             const angleForLines = (index * 10 * Math.PI) / 180;
-            const x1 = radius + Math.cos(angleForLines) * (radius - 10);
-            const y1 = radius - Math.sin(angleForLines) * (radius - 10);
-            const x2 = radius + Math.cos(angleForLines) * (radius - 5);
-            const y2 = radius - Math.sin(angleForLines) * (radius - 5);
+            const startX = radius + Math.cos(angleForLines) * (radius - 10);
+            const startY = radius - Math.sin(angleForLines) * (radius - 10);
+            const endX= radius + Math.cos(angleForLines) * (radius - 5);
+            const endY = radius - Math.sin(angleForLines) * (radius - 5);
             return (
               <line
                 key={index}
-                x1={x1}
-                y1={y1}
-                x2={x2}
-                y2={y2}
+                x1={startX}
+                y1={startY}
+                x2={endX}
+                y2={endY}
                 stroke={index % 9 === 0 ? "#333" : "#bbb"}
                 strokeWidth={index % 9 === 0 ? 2 : 1}
               />
