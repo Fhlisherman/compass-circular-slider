@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { describeSlice } from "../utils/utils";
 
 type Props = {
@@ -12,54 +12,54 @@ const CompassElevationSlider: React.FC<Props> = ({
   changeElevation,
   radius,
 }) => {
-  const visualMin = -30;
-  const visualMax = 30;
+  const VISUALMIN = -30;
+  const VISUALMAX = 30;
 
   const circleRef = useRef<HTMLDivElement | null>(null);
-  const [isDragging, setIsDragging] = useState(false);
+  const [isDragging, setIsDragging] = useState<boolean>(false);
 
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!isDragging || !circleRef.current) return;
+  const handleMouseMove = useCallback((e: MouseEvent) => {
+    if (!isDragging || !circleRef.current) return;
 
-      const elP = circleRef.current.getBoundingClientRect();
-      const centerX = elP.left + elP.width / 2;
-      const centerY = elP.top + elP.height / 2;
+    const elP = circleRef.current.getBoundingClientRect();
+    const centerX = elP.left + elP.width / 2;
+    const centerY = elP.top + elP.height / 2;
 
-      const dx = e.clientX - centerX;
-      const dy = e.clientY - centerY;
+    const dx = e.clientX - centerX;
+    const dy = e.clientY - centerY;
 
-      const atan = Math.atan2(dy, dx);
-      let visualDeg = (-atan * (180 / Math.PI) + 360) % 360;
-      if (visualDeg > 180) visualDeg -= 360;
-      visualDeg = Math.min(
-        Math.max(Math.ceil(visualDeg), visualMin),
-        visualMax
-      );
+    const atan = Math.atan2(dy, dx);
+    let visualDeg = (-atan * (180 / Math.PI) + 360) % 360;
+    if (visualDeg > 180) visualDeg -= 360;
+    visualDeg = Math.min(
+      Math.max(Math.ceil(visualDeg), VISUALMIN),
+      VISUALMAX
+    );
 
-      const constrainedElevation = Math.floor(visualDeg / 2);
-      changeElevation(constrainedElevation);
-    };
+    const constrainedElevation = Math.floor(visualDeg / 2);
+    changeElevation(constrainedElevation);
+  }, [isDragging, changeElevation]);
 
-    const handleMouseUp = () => {
-      setIsDragging(false);
-    };
-
-    if (isDragging) {
-      document.addEventListener("mousemove", handleMouseMove);
-      document.addEventListener("mouseup", handleMouseUp);
-    }
-
-    return () => {
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
-    };
-  }, [isDragging, visualMin, visualMax, changeElevation]);
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
 
   const handleMouseDown = (e: React.MouseEvent) => {
     e.stopPropagation();
     setIsDragging(true);
   };
+
+  useEffect(() => {
+    if (isDragging) {
+      document.addEventListener("mousemove", handleMouseMove);
+      document.addEventListener("mouseup", handleMouseUp);
+    }
+  
+    return () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, [isDragging, handleMouseMove, handleMouseUp]);
 
   const svgSize = radius * 2;
   const arrowLength = radius * 0.7;
@@ -116,21 +116,21 @@ const CompassElevationSlider: React.FC<Props> = ({
           />
 
           {/* Degree Ticks */}
-          {[...Array(7)].map((_, i) => {
-            const angleForLines = ((i - 3) * 10 * Math.PI) / 180; // Adjust for center at 0
+          {[...Array(7)].map((_, index) => {
+            const angleForLines = ((index - 3) * 10 * Math.PI) / 180; // Adjust for center at 0
             const x1 = radius + Math.cos(angleForLines) * (radius - 10);
             const y1 = radius - Math.sin(angleForLines) * (radius - 10);
             const x2 = radius + Math.cos(angleForLines) * (radius - 5);
             const y2 = radius - Math.sin(angleForLines) * (radius - 5);
             return (
               <line
-                key={i}
+                key={index}
                 x1={x1}
                 y1={y1}
                 x2={x2}
                 y2={y2}
-                stroke={i % 3 === 0 ? "#333" : "#bbb"}
-                strokeWidth={i % 3 === 0 ? 2 : 1}
+                stroke={index % 3 === 0 ? "#333" : "#bbb"}
+                strokeWidth={index % 3 === 0 ? 2 : 1}
               />
             );
           })}
