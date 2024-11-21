@@ -21,7 +21,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16' # Use your desired Node.js version
+          node-version: '16'
 
       # Install dependencies
       - name: Install dependencies
@@ -29,13 +29,14 @@ jobs:
 
       # Bump version based on commit message
       - name: Bump version
+        shell: bash
         run: |
           if [[ "${{ github.event.head_commit.message }}" == *"[major]"* ]]; then
-            npm version major
+            npm version major -m "chore(release): %s [skip ci]"
           elif [[ "${{ github.event.head_commit.message }}" == *"[minor]"* ]]; then
-            npm version minor
+            npm version minor -m "chore(release): %s [skip ci]"
           else
-            npm version patch
+            npm version patch -m "chore(release): %s [skip ci]"
           fi
 
       # Build the package
