@@ -30,9 +30,10 @@ const CompassElevationSlider: React.FC<Props> = ({
 
     const atan = Math.atan2(dy, dx);
     let visualDeg = (-atan * (180 / Math.PI) + 360) % 360;
-    if (visualDeg > 180) visualDeg -= 360;
+    
+    // calculate the degrees based on negative and positive dgrees (180 to -180) instead of 360
     visualDeg = Math.min(
-      Math.max(Math.ceil(visualDeg), VISUALMIN),
+      Math.max(Math.ceil(visualDeg > 180 ? visualDeg : visualDeg -= 360), VISUALMIN),
       VISUALMAX
     );
 
