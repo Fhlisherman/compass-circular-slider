@@ -7,14 +7,14 @@ type Props = {
   radius: number;
 };
 
+const VISUALMIN = -30;
+const VISUALMAX = 30;
+
 const CompassElevationSlider: React.FC<Props> = ({
   elevation,
   changeElevation,
   radius,
 }) => {
-  const VISUALMIN = -30;
-  const VISUALMAX = 30;
-
   const circleRef = useRef<HTMLDivElement | null>(null);
   const [isDragging, setIsDragging] = useState<boolean>(false);
 
@@ -29,15 +29,15 @@ const CompassElevationSlider: React.FC<Props> = ({
     const dy = e.clientY - centerY;
 
     const atan = Math.atan2(dy, dx);
-    let visualDeg = (-atan * (180 / Math.PI) + 360) % 360;
-    
-    // calculate the degrees based on negative and positive dgrees (180 to -180) instead of 360
-    visualDeg = Math.min(
-      Math.max(Math.ceil(visualDeg > 180 ? visualDeg : visualDeg -= 360), VISUALMIN),
+    const tempDegree = (-atan * (180 / Math.PI) + 360) % 360;
+
+    // calculate the degrees based on negative and positive degrees (180 to -180) instead of 360
+    const visualDegree = Math.min(
+      Math.max(Math.ceil(tempDegree > 180 ? tempDegree : tempDegree - 360), VISUALMIN),
       VISUALMAX
     );
 
-    const constrainedElevation = Math.floor(visualDeg / 2);
+    const constrainedElevation = Math.floor(visualDegree / 2);
     changeElevation(constrainedElevation);
   }, [isDragging, changeElevation]);
 
