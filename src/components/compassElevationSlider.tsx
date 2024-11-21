@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { describeSlice } from "../utils/utils";
+import { createSliceSVGPath } from "../utils/utils";
 
 type Props = {
   elevation: number;
@@ -66,7 +66,7 @@ const CompassElevationSlider: React.FC<Props> = ({
     return {
       svgSize:radius * 2,
       arrowLength:radius * 0.7,
-      highlightArc: describeSlice(58, 122, radius - 4, radius),
+      highlightArc: createSliceSVGPath(58, 122, radius - 4, radius),
     }
   },[radius])
   return (

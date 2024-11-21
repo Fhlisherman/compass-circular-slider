@@ -11,12 +11,12 @@ const polarToCartesian = (
   };
 };
 
-const describeSlice = (
+const createSliceSVGPath = (
   startAngle: number,
   endAngle: number,
   arcRadius: number,
   radius: number
-) => {
+): string => {
   const start = polarToCartesian(radius, radius, arcRadius, endAngle);
   const end = polarToCartesian(radius, radius, arcRadius, startAngle);
   const largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1";
@@ -29,4 +29,4 @@ const describeSlice = (
   ].join(" ");
 };
 
-export { describeSlice };
+export { createSliceSVGPath };
