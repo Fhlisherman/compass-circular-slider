@@ -28,31 +28,19 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '16'
-          
-      - name: Authenticate with npm
-        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
+          cache: 'npm'
 
       # Install dependencies
       - name: Install dependencies
         run: npm install
 
-      # Bump version based on commit message
-      - name: Bump version
-        shell: bash
-        run: |
-          if [[ "${{ github.event.head_commit.message }}" == *"[major]"* ]]; then
-            npm version major -m "chore(release): %s [skip ci]"
-          elif [[ "${{ github.event.head_commit.message }}" == *"[minor]"* ]]; then
-            npm version minor -m "chore(release): %s [skip ci]"
-          else
-            npm version patch -m "chore(release): %s [skip ci]"
-          fi
-
       # Build the package
       - name: Build the package
         run: npm run build
 
-      # Publish to npm
-      - name: Publish to npm
-        if: github.ref == 'refs/heads/main'
-        run: npm publish --access public
+      # Run semantic-release
+      - name: Run semantic-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npx semantic-release
