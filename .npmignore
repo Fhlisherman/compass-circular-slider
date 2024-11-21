@@ -1,0 +1,50 @@
+# Ignore build tools and configs
+tsup.config.ts
+tsconfig.json
+.eslintrc
+.eslintignore
+.prettierrc
+.prettierignore
+.vscode/
+.env
+.env.local
+*.log
+
+# Ignore build and test outputs
+dist/
+coverage/
+node_modules/
+*.tsbuildinfo
+
+# Ignore test files and setup
+__tests__/
+__mocks__/
+jest.config.*
+test/
+tests/
+*.test.js
+*.test.ts
+*.test.tsx
+*.spec.js
+*.spec.ts
+*.spec.tsx
+
+# Ignore React app-specific files
+public/
+src/setupTests.ts
+
+# Ignore miscellaneous files
+*.md
+*.yml
+*.yaml
+*.lock
+*.sh
+.DS_Store
+.idea/
+*.iml
+*.swp
+*.bak
+*.tmp
+
+# Allow dist directory (important)
+!dist/
