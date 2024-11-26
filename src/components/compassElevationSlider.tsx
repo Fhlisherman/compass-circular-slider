@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { createSliceSVGPath } from "../utils/utils";
 
 type Props = {
@@ -18,28 +24,32 @@ const CompassElevationSlider: React.FC<Props> = ({
   const circleRef = useRef<HTMLDivElement | null>(null);
   const [isDragging, setIsDragging] = useState<boolean>(false);
 
-  const handleMouseMove = useCallback((e: MouseEvent) => {
-    if (!isDragging || !circleRef.current) return;
+  const handleMouseMove = useCallback(
+    (e: MouseEvent) => {
+      if (!isDragging || !circleRef.current) return;
 
-    const elementPoint = circleRef.current.getBoundingClientRect();
-    const centerX = elementPoint.left + elementPoint.width / 2;
-    const centerY = elementPoint.top + elementPoint.height / 2;
+      const elementPoint = circleRef.current.getBoundingClientRect();
+      const centerX = elementPoint.left + elementPoint.width / 2;
+      const centerY = elementPoint.top + elementPoint.height / 2;
 
-    const dx = e.clientX - centerX;
-    const dy = e.clientY - centerY;
+      const dx = e.clientX - centerX;
+      const dy = e.clientY - centerY;
 
-    const atan = Math.atan2(dy, dx);
-    const tempDegree = (-atan * (180 / Math.PI) + 360) % 360;
+      const atan = Math.atan2(dy, dx);
+      const tempDegree = (-atan * (180 / Math.PI) + 360) % 360;
+      const visualDegree =
+        tempDegree > 180
+          ? Math.min(
+              Math.max(Math.ceil(tempDegree - 360), VISUALMIN),
+              VISUALMAX
+            )
+          : Math.min(Math.max(Math.ceil(tempDegree), VISUALMIN), VISUALMAX);
 
-    // calculate the degrees based on negative and positive degrees (180 to -180) instead of 360
-    const visualDegree = Math.min(
-      Math.max(Math.ceil(tempDegree > 180 ? tempDegree : tempDegree - 360), VISUALMIN),
-      VISUALMAX
-    );
-
-    const constrainedElevation = Math.floor(visualDegree / 2);
-    changeElevation(constrainedElevation);
-  }, [isDragging, changeElevation]);
+      const constrainedElevation = Math.floor(visualDegree / 2);
+      changeElevation(constrainedElevation);
+    },
+    [isDragging, changeElevation]
+  );
 
   const handleMouseUp = () => {
     setIsDragging(false);
@@ -55,20 +65,20 @@ const CompassElevationSlider: React.FC<Props> = ({
       document.addEventListener("mousemove", handleMouseMove);
       document.addEventListener("mouseup", handleMouseUp);
     }
-  
+
     return () => {
       document.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("mouseup", handleMouseUp);
     };
   }, [isDragging, handleMouseMove, handleMouseUp]);
 
-  const {svgSize, arrowLength, highlightArc}= useMemo(() => {
+  const { svgSize, arrowLength, highlightArc } = useMemo(() => {
     return {
-      svgSize:radius * 2,
-      arrowLength:radius * 0.7,
+      svgSize: radius * 2,
+      arrowLength: radius * 0.7,
       highlightArc: createSliceSVGPath(58, 122, radius - 4, radius),
-    }
-  },[radius])
+    };
+  }, [radius]);
   return (
     <div
       style={{
