@@ -1,6 +1,6 @@
 {
   "name": "compass-circular-slider",
-  "version": "0.1.1",
+  "version": "1.0.0",
   "author": "Adar Fhlisher",
   "source": "src/index.ts",
   "main": "dist/index.js",
