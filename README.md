@@ -14,3 +14,45 @@ To install the library, run:
 
 ```bash
 npm install compass-slider
+```
+### Compass slider
+```node
+import { CompassSlider } from "compass-circular-slider";
+
+const App = () => {
+  const [angle, setAngle] = useState(0);
+
+  return (
+      <CompassSlider radius={80} angle={angle} changeAngle={(value: number) => setAngle(value)}/>
+  );
+}
+```
+![Alt text](images/compassSlider.png)
+
+### Compass slider with limits to the degrees
+```node
+import { CompassElevationSlider } from "compass-circular-slider";
+
+const App = () => {
+  const [elevation, setElevation] = useState(0);
+
+  return (
+    <CompassElevationSlider radius={40} elevation={elevation} changeElevation={(value: number) => setElevation(value)}/>
+  );
+}
+```
+![Alt text](images/borderCompassSlider.png)
+
+### Compass slider for elevatation
+```node
+import { CompassSlider } from "compass-circular-slider";
+
+const App = () => {
+  const [angle, setAngle] = useState(0);
+
+  return (
+      <CompassSlider radius={40} angle={angle} min={20} max={170} changeAngle={(value: number) => setAngle(value)}/>
+  );
+}
+```
+![Alt text](images/elevationCompass.png)

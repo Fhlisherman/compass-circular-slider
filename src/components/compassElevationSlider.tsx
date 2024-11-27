@@ -76,7 +76,7 @@ const CompassElevationSlider: React.FC<Props> = ({
     return {
       svgSize: radius * 2,
       arrowLength: radius * 0.7,
-      highlightArc: createSliceSVGPath(58, 122, radius - 4, radius),
+      highlightArc: createSliceSVGPath(122, 418, radius - 4, radius),
     };
   }, [radius]);
   return (
