@@ -32,6 +32,7 @@ tests/
 # Ignore React app-specific files
 public/
 src/setupTests.ts
+images/
 
 # Ignore miscellaneous files
 *.md

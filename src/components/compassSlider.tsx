@@ -20,10 +20,14 @@ const CompassSlider: React.FC<Props> = ({
   angle,
   changeAngle,
   min = 0,
-  max = 0,
+  max = 360,
 }: Props) => {
   const circleRef = useRef<HTMLDivElement | null>(null);
   const [isDragging, setIsDragging] = useState<boolean>(false);
+
+  useEffect(() => {
+    changeAngle(min)
+  }, [])
 
   const handleMouseMove = useCallback(
     (e: MouseEvent) => {
@@ -65,11 +69,12 @@ const CompassSlider: React.FC<Props> = ({
     };
   }, [isDragging, handleMouseMove, handleMouseUp]);
 
-  const {svgSize, arrowLength, outsideRangeSlice}= useMemo(() => {
+  const {svgSize, arrowLength, outsideRangeSliceA, outsideRangeSliceB}= useMemo(() => {
     return {
       svgSize:radius * 2,
       arrowLength:radius * 0.7,
-      outsideRangeSlice: createSliceSVGPath(0, min, radius - 4, radius),
+      outsideRangeSliceA: createSliceSVGPath(0, min, radius - 4, radius),
+      outsideRangeSliceB: createSliceSVGPath(max, 359.9999999999, radius - 4, radius)
     }
   },[radius, min])
 
@@ -118,7 +123,8 @@ const CompassSlider: React.FC<Props> = ({
             strokeWidth="2"
             fill="none"
           />
-           <path d={outsideRangeSlice} fill="red" opacity="0.3" />
+           <path d={outsideRangeSliceA} fill="red" opacity="0.3" />
+           <path d={outsideRangeSliceB} fill="red" opacity="0.3" />
           {[...Array(36)].map((_, index) => {
             const angleForLines = (index * 10 * Math.PI) / 180;
             const startX = radius + Math.cos(angleForLines) * (radius - 10);
