@@ -74,7 +74,7 @@ const CompassSlider: React.FC<Props> = ({
       svgSize:radius * 2,
       arrowLength:radius * 0.7,
       outsideRangeSliceA: createSliceSVGPath(0, min, radius - 4, radius),
-      outsideRangeSliceB: createSliceSVGPath(max, 359.9999999999, radius - 4, radius)
+      outsideRangeSliceB: createSliceSVGPath(max, 360, radius - 4, radius)
     }
   },[radius, min])
 
