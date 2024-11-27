@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/Fhlisherman/compass-circular-slider/compare/v1.0.0...v1.1.0) (2024-11-27)
+
+
+### Features
+
+* bug fixes, small design change, readme change ([591781f](https://github.com/Fhlisherman/compass-circular-slider/commit/591781f3ae082f9f272eae4a70f4e6af5c80bc6e))
+
 # 1.0.0 (2024-11-26)
 
 
