@@ -29,7 +29,7 @@ const App = () => {
 ```
 ![Alt text](images/compassSlider.png)
 
-### Compass slider for elevatation
+### Compass slider with limits to the degrees
 ```node
 import { CompassElevationSlider } from "compass-circular-slider";
 
@@ -43,7 +43,7 @@ const App = () => {
 ```
 ![Alt text](images/borderCompassSlider.png)
 
-### Compass slider with limits to the degrees
+### Compass slider for elevatation
 ```node
 import { CompassSlider } from "compass-circular-slider";
 
