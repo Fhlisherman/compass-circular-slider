@@ -26,8 +26,8 @@ const CompassSlider: React.FC<Props> = ({
   const [isDragging, setIsDragging] = useState<boolean>(false);
 
   useEffect(() => {
-    changeAngle(min)
-  }, [])
+    angle < min && changeAngle(min);
+  }, [min])
 
   const handleMouseMove = useCallback(
     (e: MouseEvent) => {
