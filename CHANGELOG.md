@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/Fhlisherman/compass-circular-slider/compare/v1.1.0...v1.1.1) (2024-11-27)
+
+
+### Bug Fixes
+
+* fix small bug on min max change ([7dd6dd6](https://github.com/Fhlisherman/compass-circular-slider/commit/7dd6dd661a39575510dc2c7c66cb0fa1f2b0fdbe))
+
 # [1.1.0](https://github.com/Fhlisherman/compass-circular-slider/compare/v1.0.0...v1.1.0) (2024-11-27)
 
 
