@@ -1,3 +1,10 @@
+## [1.1.2](https://github.com/Fhlisherman/compass-circular-slider/compare/v1.1.1...v1.1.2) (2024-12-04)
+
+
+### Bug Fixes
+
+* fix small changes in the compass usememo slices function ([b6e6dae](https://github.com/Fhlisherman/compass-circular-slider/commit/b6e6dae05b0d19ccc488e77c3ee8c5a3c096745d))
+
 ## [1.1.1](https://github.com/Fhlisherman/compass-circular-slider/compare/v1.1.0...v1.1.1) (2024-11-27)
 
 
