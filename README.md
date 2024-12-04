@@ -28,22 +28,7 @@ const App = () => {
 }
 ```
 ![Alt text](images/compassSlider.png)
-
 ### Compass slider with limits to the degrees
-```node
-import { CompassElevationSlider } from "compass-circular-slider";
-
-const App = () => {
-  const [elevation, setElevation] = useState(0);
-
-  return (
-    <CompassElevationSlider radius={40} elevation={elevation} changeElevation={(value: number) => setElevation(value)}/>
-  );
-}
-```
-![Alt text](images/borderCompassSlider.png)
-
-### Compass slider for elevatation
 ```node
 import { CompassSlider } from "compass-circular-slider";
 
@@ -55,4 +40,20 @@ const App = () => {
   );
 }
 ```
+![Alt text](images/borderCompassSlider.png)
+
+### Compass slider for elevatation
+```node
+import { CompassElevationSlider } from "compass-circular-slider";
+
+const App = () => {
+  const [elevation, setElevation] = useState(0);
+
+  return (
+    <CompassElevationSlider radius={40} elevation={elevation} changeElevation={(value: number) => setElevation(value)}/>
+  );
+}
+```
 ![Alt text](images/elevationCompass.png)
+
+

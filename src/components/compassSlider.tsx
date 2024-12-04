@@ -80,7 +80,7 @@ const CompassSlider: React.FC<Props> = ({
       outsideRangeSliceA: createSliceSVGPath(0, min, radius - 4, radius),
       outsideRangeSliceB: createSliceSVGPath(max, 360, radius - 4, radius)
     }
-  },[radius, min])
+  },[radius, min, max])
 
   return (
     <div
