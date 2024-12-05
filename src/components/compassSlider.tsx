@@ -71,8 +71,6 @@ const CompassSlider: React.FC<Props> = ({
   };
   
   
-  
-
   const handleMouseUp = () => {
     setIsDragging(false);
   };
@@ -94,11 +92,11 @@ const CompassSlider: React.FC<Props> = ({
     };
   }, [isDragging, handleMouseMove, handleMouseUp]);
 
-  const { svgSize, arrowLength, outsideRangeSliceA } = useMemo(() => {
+  const { svgSize, arrowLength, outsideRangeSlice } = useMemo(() => {
     return {
       svgSize: radius * 2,
       arrowLength: radius * 0.7,
-      outsideRangeSliceA: createSliceSVGPath(max, min, radius - 4, radius),
+      outsideRangeSlice: createSliceSVGPath(max, min, radius - 4, radius),
     };
   }, [radius, min, max]);
 
@@ -147,7 +145,7 @@ const CompassSlider: React.FC<Props> = ({
             strokeWidth="2"
             fill="none"
           />
-          <path d={outsideRangeSliceA} fill="red" opacity="0.3" />
+          <path d={outsideRangeSlice} fill="red" opacity="0.3" />
 
           {[...Array(36)].map((_, index) => {
             const angleForLines = (index * 10 * Math.PI) / 180;
