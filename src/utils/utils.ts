@@ -19,14 +19,17 @@ const createSliceSVGPath = (
 ): string => {
   const start = polarToCartesian(radius, radius, arcRadius, endAngle);
   const end = polarToCartesian(radius, radius, arcRadius, startAngle);
-  const largeArcFlag = endAngle - startAngle <= 180 ? (startAngle < endAngle && startAngle - endAngle <=180 ) ? "0" : "1" : "1";
+
+  let deltaAngle = endAngle - startAngle;
+  if (deltaAngle < 0) deltaAngle += 360; 
+
+  const largeArcFlag = deltaAngle > 180 ? "1" : "0";
 
   return [
-    `M ${radius},${radius}`,
+    `M ${radius},${radius}`, 
     `L ${start.x},${start.y}`,
-    `A ${arcRadius},${arcRadius} 0 ${largeArcFlag} 0 ${end.x},${end.y}`,
-    "Z",
+    `A ${arcRadius},${arcRadius} 0 ${largeArcFlag} 0 ${end.x},${end.y}`, 
+    "Z", 
   ].join(" ");
 };
-
 export { createSliceSVGPath };
