@@ -26,12 +26,12 @@ const CompassSlider: React.FC<Props> = ({
   const [isDragging, setIsDragging] = useState<boolean>(false);
 
   useEffect(() => {
-    if(angle < min) {
+    if (angle < min) {
       changeAngle(min);
-    }else if( angle > max) {
+    } else if (angle > max) {
       changeAngle(max);
     }
-  }, [min, max])
+  }, [min, max]);
 
   const handleMouseMove = useCallback(
     (e: MouseEvent) => {
@@ -40,17 +40,38 @@ const CompassSlider: React.FC<Props> = ({
       const elementPoint = circleRef.current.getBoundingClientRect();
       const elementPosition = { x: elementPoint.left, y: elementPoint.top };
 
-      const middlePosition = { x: e.clientX - elementPosition.x, y: e.clientY - elementPosition.y };
+      const middlePosition = {
+        x: e.clientX - elementPosition.x,
+        y: e.clientY - elementPosition.y,
+      };
       const atan = Math.atan2(
         middlePosition.x - radius,
         middlePosition.y - radius
       );
       const deg = -atan / (Math.PI / 180) + 180;
-      const constrainedAngle = Math.min(Math.max(Math.ceil(deg), min), max);
+
+      const constrainedAngle = getConstrainedAngle(deg, min, max);
       changeAngle(constrainedAngle);
     },
     [isDragging, radius, min, max, changeAngle]
   );
+
+  const getConstrainedAngle = (deg: number, min: number, max: number): number => {
+    const roundedDeg = Math.ceil(deg);
+    
+    const inRange = max >= min 
+      ? roundedDeg >= min && roundedDeg <= max 
+      : roundedDeg > min || roundedDeg < max;
+  
+    if (inRange) return roundedDeg;
+  
+    const distToMin = Math.abs(roundedDeg - min);
+    const distToMax = Math.abs(roundedDeg - max);
+    return distToMin < distToMax ? min : max;
+  };
+  
+  
+  
 
   const handleMouseUp = () => {
     setIsDragging(false);
@@ -66,21 +87,20 @@ const CompassSlider: React.FC<Props> = ({
       document.addEventListener("mousemove", handleMouseMove);
       document.addEventListener("mouseup", handleMouseUp);
     }
-  
+
     return () => {
       document.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("mouseup", handleMouseUp);
     };
   }, [isDragging, handleMouseMove, handleMouseUp]);
 
-  const {svgSize, arrowLength, outsideRangeSliceA, outsideRangeSliceB}= useMemo(() => {
+  const { svgSize, arrowLength, outsideRangeSliceA } = useMemo(() => {
     return {
-      svgSize:radius * 2,
-      arrowLength:radius * 0.7,
-      outsideRangeSliceA: createSliceSVGPath(0, min, radius - 4, radius),
-      outsideRangeSliceB: createSliceSVGPath(max, 360, radius - 4, radius)
-    }
-  },[radius, min, max])
+      svgSize: radius * 2,
+      arrowLength: radius * 0.7,
+      outsideRangeSliceA: createSliceSVGPath(max, min, radius - 4, radius),
+    };
+  }, [radius, min, max]);
 
   return (
     <div
@@ -127,13 +147,13 @@ const CompassSlider: React.FC<Props> = ({
             strokeWidth="2"
             fill="none"
           />
-           <path d={outsideRangeSliceA} fill="red" opacity="0.3" />
-           <path d={outsideRangeSliceB} fill="red" opacity="0.3" />
+          <path d={outsideRangeSliceA} fill="red" opacity="0.3" />
+
           {[...Array(36)].map((_, index) => {
             const angleForLines = (index * 10 * Math.PI) / 180;
             const startX = radius + Math.cos(angleForLines) * (radius - 10);
             const startY = radius - Math.sin(angleForLines) * (radius - 10);
-            const endX= radius + Math.cos(angleForLines) * (radius - 5);
+            const endX = radius + Math.cos(angleForLines) * (radius - 5);
             const endY = radius - Math.sin(angleForLines) * (radius - 5);
             return (
               <line
