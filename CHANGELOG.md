@@ -1,3 +1,10 @@
+## [1.1.5](https://github.com/Fhlisherman/compass-circular-slider/compare/v1.1.4...v1.1.5) (2024-12-05)
+
+
+### Bug Fixes
+
+* fix red slice creation to work for by directional min max checks ([277ad30](https://github.com/Fhlisherman/compass-circular-slider/commit/277ad30cf047ca44157196152b2d236ef2a2dde1))
+
 ## [1.1.4](https://github.com/Fhlisherman/compass-circular-slider/compare/v1.1.3...v1.1.4) (2024-12-05)
 
 
