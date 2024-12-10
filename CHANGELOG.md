@@ -1,3 +1,10 @@
+## [1.1.6](https://github.com/Fhlisherman/compass-circular-slider/compare/v1.1.5...v1.1.6) (2024-12-10)
+
+
+### Bug Fixes
+
+* changed packages in package.json ([1cb858a](https://github.com/Fhlisherman/compass-circular-slider/commit/1cb858af18de82cfc583241a78c0c0f70a010c65))
+
 ## [1.1.5](https://github.com/Fhlisherman/compass-circular-slider/compare/v1.1.4...v1.1.5) (2024-12-05)
 
 
