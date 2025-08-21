@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/Fhlisherman/compass-circular-slider/compare/v1.1.6...v1.2.0) (2025-08-21)
+
+
+### Features
+
+* **keywords:**  add keywords to package json ([218eab1](https://github.com/Fhlisherman/compass-circular-slider/commit/218eab1ea57cdabcddc9f4d5ed35aa20e216c2b9))
+
 ## [1.1.6](https://github.com/Fhlisherman/compass-circular-slider/compare/v1.1.5...v1.1.6) (2024-12-10)
 
 
