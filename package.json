@@ -12,6 +12,7 @@
     "dev": "microbundle watch",
     "release": "semantic-release"
   },
+  "keywords": ["compass", "circular", "slider", "react", "react-component"],
   "devDependencies": {
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
